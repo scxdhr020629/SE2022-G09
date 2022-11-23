@@ -1,0 +1,35 @@
+普通用户预约参观文化组织 seq
+       读入预约文化组织
+       currentOrgName := 预约文化组织
+       读入预约时间
+       处理数据 seq
+              currentDate := 预约时间
+              检索appointment表 seq
+                     根据currentOrgNam、currentDate查询appointment表 seq
+                            获取已约人数occupyPlaces和总名额totalPlaces
+                            判断人数 seq
+                                   occupyPlaces < totalPlaces select 查询结果为空
+                                          处理数据 end
+                                   occupyPlaces < totalPlaces select 查询结果不为空
+                                          检索ordering表 seq
+                                                 根据用户账号currentUserId查询ordering表 select 查询不为空
+                                                        红字提示“您已预约。”
+                                                 根据用户账号currentUserId查询ordering表 or 查询为空
+                                                        弹窗提示“您确定要预约某文化组织某时间吗？”
+                                                        判断用户选择 select 选择“是”
+                                                               插入ordering表
+                                                               修改appointment表 seq
+                                                                      occupyPlaces := occupyPlaces + 1
+                                                               修改appointment表 end
+                                                               弹窗提示“预约成功！”
+                                                        判断用户选择 or 选择“否”
+                                                               检索ordering表 end
+                                                        判断用户选择 end
+                                                 根据用户账号currentUserId查询ordering表 end
+                                          检索ordering表 end
+                                   occupyPlaces < totalPlaces end
+                     根据currentOrgNam、currentDate查询appointment表 end
+              检索appointment表 end
+       处理数据 end
+普通用户预约参观文化组织 end
+                     

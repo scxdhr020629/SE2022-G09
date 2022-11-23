@@ -1,0 +1,30 @@
+消息读取 seq
+       启动消息队列线程模块Looper
+       while(Looper)
+	    发现MessageQueue中存在新消息 seq
+		 从Queue中取出消息
+		 传递到handleMessage中
+	     end
+消息处理 end
+
+查看和发送消息 seq
+       启动Handler
+       消息发送 seq
+              读入输入的内容
+	    使用Handler的sendMessage方法 seq
+                     将消息传递到MessageQueue中 select 发送失败
+		        红字提醒“发送失败！”
+		 or 发送成功
+		        将输入的内容显示在聊天框中
+		 传递消息 end  
+        消息发送 end
+        查看消息 seq
+	     使用Handler的handleMessage方法 select handlerMessage中没有新消息
+		  不做处理 end
+	     or handlerMessage中有新消息
+		  print(时间、消息内容)
+	     handleMessage方法 end
+        查看消息 end
+查看和发送消息 end
+		  		  
+		 
