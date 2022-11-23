@@ -1,34 +1,34 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2022/11/12 19:46:30                          */
+/* Created on:     2022/11/20 1:45:21                           */
 /*==============================================================*/
 
 
-drop table if exists adm;
+drop table if exists admin;
 
 drop table if exists applying;
 
+drop table if exists appointment;
+
+drop table if exists normalUser;
+
+drop table if exists ordering;
+
 drop table if exists organization;
 
-drop table if exists organization_time;
+drop table if exists recruitBoard;
 
 drop table if exists time;
 
-drop table if exists user;
-
-drop table if exists visiting;
-
-drop table if exists volunteer_apply;
-
 /*==============================================================*/
-/* Table: adm                                                   */
+/* Table: admin                                                 */
 /*==============================================================*/
-create table adm
+create table admin
 (
-   aid                  int not null,
-   name                 varchar(50),
-   password             varchar(50),
-   primary key (aid)
+   adminId              int not null,
+   adminName            varchar(50),
+   adminPwd             varchar(50),
+   primary key (adminId)
 );
 
 /*==============================================================*/
@@ -36,10 +36,48 @@ create table adm
 /*==============================================================*/
 create table applying
 (
-   ortimeId             int not null,
-   userId               int not null,
-   IsAttend             bool,
-   primary key (ortimeId, userId)
+   applyId              int not null,
+   nUserId              int not null,
+   recruitId            int not null,
+   primary key (applyId)
+);
+
+/*==============================================================*/
+/* Table: appointment                                           */
+/*==============================================================*/
+create table appointment
+(
+   appointId            int not null,
+   orgId                int not null,
+   timeId               int not null,
+   totalPlaces          int not null,
+   occupyPlaces         int not null,
+   primary key (appointId)
+);
+
+/*==============================================================*/
+/* Table: normalUser                                            */
+/*==============================================================*/
+create table normalUser
+(
+   nUserId              int not null,
+   nUserName            varchar(50) not null,
+   nUserPwd             varchar(50) not null,
+   sex                  varchar(10),
+   userPhone            varchar(20) not null,
+   totalTime            float not null,
+   primary key (nUserId)
+);
+
+/*==============================================================*/
+/* Table: ordering                                              */
+/*==============================================================*/
+create table ordering
+(
+   orderId              int not null,
+   appointId            int not null,
+   nUserId              int not null,
+   primary key (orderId)
 );
 
 /*==============================================================*/
@@ -48,25 +86,29 @@ create table applying
 create table organization
 (
    orgId                int not null,
-   orgName              varchar(50),
-   orgPwd               varchar(50),
-   address              varchar(255),
+   orgName              varchar(50) not null,
+   orgPwd               varchar(50) not null,
+   address              varchar(255) not null,
    orgPhone             varchar(20),
    introduction         varchar(255),
    feature              varchar(255),
+   orgClickNum          int,
+   serveClickNum        char(10),
    primary key (orgId)
 );
 
 /*==============================================================*/
-/* Table: organization_time                                     */
+/* Table: recruitBoard                                          */
 /*==============================================================*/
-create table organization_time
+create table recruitBoard
 (
-   ortimeId             int not null,
-   orgId                int not null,
+   recruitId            int not null,
    timeId               int not null,
-   date                 date not null,
-   primary key (ortimeId)
+   orgId                int not null,
+   titile               varchar(255),
+   content              varchar(255) not null,
+   serveAddress         varchar(255) not null,
+   primary key (recruitId)
 );
 
 /*==============================================================*/
@@ -75,70 +117,32 @@ create table organization_time
 create table time
 (
    timeId               int not null,
-   timeName             varchar(50),
-   time_start           time,
-   time_end             time,
+   timeStart            timestamp not null,
+   timeEnd              timestamp not null,
    primary key (timeId)
 );
 
-/*==============================================================*/
-/* Table: user                                                  */
-/*==============================================================*/
-create table user
-(
-   userId               int not null,
-   userName             varchar(50),
-   userPwd              varchar(50),
-   sex                  varchar(10),
-   userPhone            varchar(20),
-   totalTime            float,
-   primary key (userId)
-);
+alter table applying add constraint FK_Relationship_7 foreign key (nUserId)
+      references normalUser (nUserId) on delete restrict on update restrict;
 
-/*==============================================================*/
-/* Table: visiting                                              */
-/*==============================================================*/
-create table visiting
-(
-   ortimeId             int not null,
-   userId               int not null,
-   primary key (ortimeId, userId)
-);
+alter table applying add constraint FK_Relationship_8 foreign key (recruitId)
+      references recruitBoard (recruitId) on delete restrict on update restrict;
 
-/*==============================================================*/
-/* Table: volunteer_apply                                       */
-/*==============================================================*/
-create table volunteer_apply
-(
-   vApplyId             int not null,
-   orgId                int,
-   userId               int,
-   titile               varchar(255),
-   content              varchar(255),
-   primary key (vApplyId)
-);
-
-alter table applying add constraint FK_Relationship_6 foreign key (userId)
-      references user (userId) on delete restrict on update restrict;
-
-alter table applying add constraint FK_Relationship_7 foreign key (ortimeId)
-      references organization_time (ortimeId) on delete restrict on update restrict;
-
-alter table organization_time add constraint FK_Relationship_3 foreign key (timeId)
+alter table appointment add constraint FK_Relationship_3 foreign key (timeId)
       references time (timeId) on delete restrict on update restrict;
 
-alter table organization_time add constraint FK_Relationship_4 foreign key (orgId)
+alter table appointment add constraint FK_Relationship_4 foreign key (orgId)
       references organization (orgId) on delete restrict on update restrict;
 
-alter table visiting add constraint FK_Relationship_10 foreign key (ortimeId)
-      references organization_time (ortimeId) on delete restrict on update restrict;
+alter table ordering add constraint FK_Relationship_10 foreign key (appointId)
+      references appointment (appointId) on delete restrict on update restrict;
 
-alter table visiting add constraint FK_Relationship_9 foreign key (userId)
-      references user (userId) on delete restrict on update restrict;
+alter table ordering add constraint FK_Relationship_9 foreign key (nUserId)
+      references normalUser (nUserId) on delete restrict on update restrict;
 
-alter table volunteer_apply add constraint FK_发布 foreign key (orgId)
+alter table recruitBoard add constraint FK_Relationship_11 foreign key (timeId)
+      references time (timeId) on delete restrict on update restrict;
+
+alter table recruitBoard add constraint FK_Relationship_12 foreign key (orgId)
       references organization (orgId) on delete restrict on update restrict;
-
-alter table volunteer_apply add constraint FK_查看 foreign key (userId)
-      references user (userId) on delete restrict on update restrict;
 
